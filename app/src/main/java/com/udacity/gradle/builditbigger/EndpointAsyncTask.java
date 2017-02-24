@@ -19,6 +19,8 @@ import br.com.etm.gce.backend.myJokeApi.MyJokeApi;
 
 public class EndpointAsyncTask extends AsyncTask<Object, Object, String> {
 
+    final static String URL_ROOT = "http://10.0.2.2:8080/_ah/api/";
+
     MyJokeApi myApiService;
     private EndpointCompleteListener endpointCompleteListener;
 
@@ -28,7 +30,7 @@ public class EndpointAsyncTask extends AsyncTask<Object, Object, String> {
         if(myApiService == null) {  // Only do this once
             MyJokeApi.Builder builder = new MyJokeApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
-                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                    .setRootUrl(URL_ROOT)
                     .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                         @Override
                         public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
