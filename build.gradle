@@ -1,0 +1,55 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+
+task launchLocalGCE {
+    doFirst{
+        println " --> Starting connected tests"
+        println "Local server is now running in daemon mode"
+    }
+    dependsOn ":backend:appengineRun"
+    evaluationDependsOn(':backend')
+    project(':backend').appengine.daemon = true
+}
+
+task launchConnectedTests {
+    doFirst{
+        println "Running connected android tests."
+    }
+    dependsOn ":app:connectedAndroidTest"
+    mustRunAfter launchLocalGCE
+
+}
+
+task stopLocalGCE{
+    dependsOn ":backend:appengineStop"
+    doLast{
+        println "Local GCE server shutdown"
+    }
+}
+
+task connectedTests {
+    description "Runs all the connected tests associated with debug variants"
+    dependsOn = [launchLocalGCE, launchConnectedTests, stopLocalGCE]
+    doLast{
+        println " --> Connected tests successfully completed"
+    }
+}
